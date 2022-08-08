@@ -13,9 +13,19 @@ interface Task {
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [disabled, setDisabled] = useState(false);
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if(!newTaskTitle) return;
+
+   const newTask = {
+    id: Math.random(),
+    title: newTaskTitle,
+    isComplete: false,
+   }
+
+   setTasks((state) => [...state, newTask])
   }
 
   function handleToggleTaskCompletion(id: number) {
@@ -24,6 +34,8 @@ export function TaskList() {
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    const removeTaks = tasks.filter(element => element.id === id)
+    setTasks(removeTaks)
   }
 
   return (
@@ -38,7 +50,7 @@ export function TaskList() {
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
-          <button type="submit" data-testid="add-task-button" onClick={handleCreateNewTask}>
+          <button type="submit" disabled={ disabled } data-testid="add-task-button" onClick={handleCreateNewTask}>
             <FiCheckSquare size={16} color="#fff"/>
           </button>
         </div>
